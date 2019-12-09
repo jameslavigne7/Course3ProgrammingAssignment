@@ -42,8 +42,6 @@ levels(activityData) <- activities$V2
 ## Also, remove those parentheses and hyphens
 for(i in 1:561) {
   names(allData)[i] <- as.character(attributeNames[i,2])
-  names(allData)[i] <- gsub("()","",names(allData)[i])
-  names(allData)[i] <- gsub("-","",names(allData)[i])
 }
 
 ## Here, we begin to use dplyr
@@ -52,7 +50,13 @@ library(dplyr)
 
 ## The assignment reqests standard deviation and mean variables,
 ## i.e. those containing the strings in the "contains" function
-desiredData <- select(allData,contains("std","mean"))
+## I did this using select but got an error
+## so now we use grep
+## desiredData <- select(allData,contains("std","mean"))
+
+meanAndstd <- union(grep("std",names(allData)),grep("mean",names(allData)))
+
+desiredData <- allData[,meanAndstd] 
 
 ## Next, build a dataframe that includes the subject and activities                      
 ## This dataframe will be grouped and summarized
